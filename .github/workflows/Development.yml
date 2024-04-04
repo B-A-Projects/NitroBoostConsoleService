@@ -1,0 +1,133 @@
+name: Development
+
+on:
+  push:
+    branches: [ "Development" ]
+  pull_request:
+    branches: [ "Development" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v3
+
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v4.0.0
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore NuGet packages
+        run: dotnet restore ./NitroBoostConsoleService.sln
+
+      - name: Build solution
+        run: dotnet build ./NitroBoostConsoleService.sln -c Debug --no-restore
+
+      - name: Upload build as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dev-build
+          path: ./NitroBoostConsoleService.Web/bin/Debug/net8.0
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v3
+
+      - name: Create build directory
+        run: md ./NitroBoostConsoleService.Web/bin/Debug/net8.0
+
+      - name: Download existing build
+        uses: actions/download-artifact@v4
+        with:
+          name: dev-build
+          path: ./NitroBoostConsoleService.Web/bin/Debug/net8.0
+
+      - name: Run unit tests
+        run: dotnet test ./NitroBoostConsoleService.sln -c Release --no-build
+
+  sonar:
+    runs-on: windows-latest
+    needs: test
+    steps:
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: 'zulu' # Alternative distribution options are available.
+
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v4.0.0
+        with:
+          dotnet-version: '8.0.x'
+        
+      - name: Install dotnet code coverage tools
+        run: dotnet tool install --global dotnet-coverage
+          
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v3
+        with:
+          path: ~\sonar\cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+          
+      - name: Cache SonarCloud scanner
+        id: cache-sonar-scanner
+        uses: actions/cache@v3
+        with:
+          path: .\.sonar\scanner
+          key: ${{ runner.os }}-sonar-scanner
+          restore-keys: ${{ runner.os }}-sonar-scanner
+          
+      - name: Install SonarCloud scanner
+        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+        shell: powershell
+        run: |
+          New-Item -Path .\.sonar\scanner -ItemType Directory
+          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+          
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        shell: powershell
+        run: |
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"B-A-Projects_NitroBoostConsoleService" /o:"b-a-projects" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
+          dotnet build ./NitroBoostConsoleService.sln -c Release
+          dotnet-coverage collect 'dotnet test' -f xml  -o 'coverage.xml'
+          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: sonar
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Log in to Docker Hub
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: blurrito/nitroboostconsoleservice-dev:latest
+      
+      - name: Build and push Docker image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
