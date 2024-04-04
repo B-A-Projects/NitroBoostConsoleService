@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.3" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NitroBoostConsoleService.Core\NitroBoostConsoleService.Core.csproj" />
+    <ProjectReference Include="..\NitroBoostConsoleService.Data\NitroBoostConsoleService.Data.csproj" />
+    <ProjectReference Include="..\NitroBoostConsoleService.Dependency\NitroBoostConsoleService.Dependency.csproj" />
+  </ItemGroup>
+
+</Project>
