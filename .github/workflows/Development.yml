@@ -35,20 +35,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Checkout branch
-        uses: actions/checkout@v3
-
-      - name: Create build directory
-        run: mkdir NitroBoostConsoleService.Web/bin/Debug/net8.0
-
       - name: Download existing build
         uses: actions/download-artifact@v4
         with:
           name: dev-build
-          path: ./NitroBoostConsoleService.Web/bin/Debug/net8.0
 
       - name: Run unit tests
-        run: dotnet test ./NitroBoostConsoleService.sln -c Release --no-build
+        run: dotnet test NitroBoostConsoleService.Test.dll
 
   sonar:
     runs-on: windows-latest
