@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: Production
+  labels:
+    app: Production
+  namespace: nitroboost
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: Production
+  template:
+    metadata:
+      labels:
+        app: Production
+    spec:
+      containers:
+        - name: Production
+          image: nitroboostregistry.azurecr.io/nitroboost-container:latest
+          ports:
+            - containerPort: 8080
