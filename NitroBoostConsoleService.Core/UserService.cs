@@ -1,6 +1,6 @@
-﻿using NitroBoostConsoleService.Dependency.DTO;
-using NitroBoostConsoleService.Dependency.Interface.Repository;
-using NitroBoostConsoleService.Dependency.Interface.Service;
+﻿using NitroBoostConsoleService.Shared.Dto;
+using NitroBoostConsoleService.Shared.Interface.Repository;
+using NitroBoostConsoleService.Shared.Interface.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,11 +15,11 @@ namespace NitroBoostConsoleService.Core
 
         public UserService(IUserRepository UserRepository) => _UserRepository = UserRepository;
 
-        public UserDTO? AddUser(UserDTO User)
+        public UserDto? AddUser(UserDto User)
         {
             throw new NotImplementedException();
         }
 
-        public UserDTO? GetUser(int UserId) => _UserRepository.GetUser(UserId);
+        public UserDto? GetUser(int UserId) => _UserRepository.GetUser(UserId);
     }
 }

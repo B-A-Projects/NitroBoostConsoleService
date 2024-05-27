@@ -1,63 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using NitroBoostConsoleService.Dependency.Interface.Repository;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
+using NitroBoostConsoleService.Shared.Interface.Repository;
 
-namespace NitroBoostConsoleService.Data
+namespace NitroBoostConsoleService.Data;
+
+public abstract class BaseRepository<TType> : IBaseRepository<TType> where TType : class
 {
-    public abstract class BaseRepository<TType> : IBaseRepository<TType>
+    protected NitroboostConsoleContext _context;
+
+    public BaseRepository(NitroboostConsoleContext context) => _context = context;
+
+    public async Task<TType> Add(TType entity) => (await _context.Set<TType>().AddAsync(entity)).Entity;
+
+    public async Task<IEnumerable<TType>> AddMany(IEnumerable<TType> entities)
     {
-        private Context _context;
-
-        public BaseRepository(Context context) => _context = context;
-
-        public Task<TType> Add(TType newObject)
+        List<TType> returnList = new List<TType>();
+        foreach (TType entity in entities)
         {
-            throw new NotImplementedException();
+            try { returnList.Add((await _context.Set<TType>().AddAsync(entity)).Entity); }
+            catch {}
         }
+        return returnList;
+    }
 
-        public Task<TType> AddMany(IEnumerable<TType> newObjects)
-        {
-            throw new NotImplementedException();
-        }
+    public void Delete(TType entity) => _context.Set<TType>().Remove(entity);
 
-        public bool Delete(int objectId)
-        {
-            throw new NotImplementedException();
-        }
+    public void DeleteMany(IEnumerable<TType> entities) => _context.Set<TType>().RemoveRange(entities);
 
-        public Task<IEnumerable<TType>> Find(Expression<Func<TType, bool>> predicate)
-        {
-            throw new NotImplementedException();
-        }
+    public async Task<IEnumerable<TType>> Find(Expression<Func<TType, bool>> predicate) =>
+        await _context.Set<TType>().Where(predicate).ToListAsync();
 
-        public Task<TType> Get(int id)
-        {
-            throw new NotImplementedException();
-        }
+    public async Task<IEnumerable<TType>> GetAll() => await _context.Set<TType>().ToListAsync();
 
-        public Task<IEnumerable<TType>> GetAll()
-        {
-            throw new NotImplementedException();
-        }
+    public void Update(TType entity) => _context.Set<TType>().Update(entity);
 
-        public TType Update(TType updatedObject)
-        {
-            throw new NotImplementedException();
-        }
+    public void UpdateMany(IEnumerable<TType> entities) => _context.Set<TType>().UpdateRange(entities);
 
-        public TType UpdateMany(IEnumerable<TType> updatedObjects)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async ValueTask DisposeAsync()
-        {
-            await _context.SaveChangesAsync();
-            await _context.DisposeAsync();
-        }
+    public async ValueTask DisposeAsync()
+    {
+        await _context.SaveChangesAsync();
+        await _context.DisposeAsync();
     }
 }

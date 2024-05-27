@@ -1,6 +1,6 @@
-﻿using NitroBoostConsoleService.Dependency.DTO;
-using NitroBoostConsoleService.Dependency.Interface.Repository;
-using NitroBoostConsoleService.Data.Entity;
+﻿using NitroBoostConsoleService.Shared.Dto;
+using NitroBoostConsoleService.Shared.Interface.Repository;
+using NitroBoostConsoleService.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,18 +12,18 @@ namespace NitroBoostConsoleService.Data
 {
     public class UserRepository : BaseRepository<User>, IUserRepository
     {
-        public UserRepository(Context context) : base(context) { }
-        public IEnumerable<UserDTO> FindUsers(Expression<Func<UserDTO, bool>> predicate)
+        public UserRepository(NitroboostConsoleContext context) : base(context) { }
+        public IEnumerable<UserDto> FindUsers(Expression<Func<UserDto, bool>> predicate)
         {
             throw new NotImplementedException();
         }
 
-        UserDTO? IUserRepository.AddUser(UserDTO user)
+        UserDto? IUserRepository.AddUser(UserDto user)
         {
             throw new NotImplementedException();
         }
 
-        UserDTO? IUserRepository.GetUser(int userId)
+        UserDto? IUserRepository.GetUser(int userId)
         {
             throw new NotImplementedException();
         }

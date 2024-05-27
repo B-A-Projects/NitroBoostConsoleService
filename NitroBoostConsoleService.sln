@@ -9,7 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NitroBoostConsoleService.Co
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NitroBoostConsoleService.Data", "NitroBoostConsoleService.Data\NitroBoostConsoleService.Data.csproj", "{CF287725-2C5D-4C60-BC8E-FCBCE4906A23}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NitroBoostConsoleService.Dependency", "NitroBoostConsoleService.Dependency\NitroBoostConsoleService.Dependency.csproj", "{903D5FEA-B4F1-47CC-8AFE-57F0DFF06686}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NitroBoostConsoleService.Shared", "NitroBoostConsoleService.Shared\NitroBoostConsoleService.Shared.csproj", "{903D5FEA-B4F1-47CC-8AFE-57F0DFF06686}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NitroBoostConsoleService.Test", "NitroBoostConsoleService.Test\NitroBoostConsoleService.Test.csproj", "{2EC35DA9-3E6C-4D0C-9DFA-4D8D0B854EA1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{903D5FEA-B4F1-47CC-8AFE-57F0DFF06686}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{903D5FEA-B4F1-47CC-8AFE-57F0DFF06686}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{903D5FEA-B4F1-47CC-8AFE-57F0DFF06686}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2EC35DA9-3E6C-4D0C-9DFA-4D8D0B854EA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2EC35DA9-3E6C-4D0C-9DFA-4D8D0B854EA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2EC35DA9-3E6C-4D0C-9DFA-4D8D0B854EA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2EC35DA9-3E6C-4D0C-9DFA-4D8D0B854EA1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
