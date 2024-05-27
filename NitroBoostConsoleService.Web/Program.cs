@@ -7,6 +7,8 @@ using NitroBoostConsoleService.Shared.Interface.Repository;
 using NitroBoostConsoleService.Shared.Interface.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using NitroBoostConsoleService.Shared.Interface.Messaging;
+using NitroBoostConsoleService.Web.Messaging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,17 @@ builder.Services.AddControllers();
 
 builder.Services.AddScoped<IDeviceService, DeviceService>();
 builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
+builder.Services.AddScoped<IBaseSender, BaseSender>(options => new BaseSender(args[4]));
+builder.Services.AddSingleton<IBaseReceiver, BaseReceiver>(options =>
+{
+    BaseReceiver receiver = new BaseReceiver(args[4]);
+    receiver.DataReceived += (sender, eventArgs) =>
+    {
+        new MessageHandler().ProcessMessage(eventArgs.Body.ToArray());
+        receiver.AcknowledgeMessage(eventArgs);
+    };
+    return new BaseReceiver(args[4]);
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
