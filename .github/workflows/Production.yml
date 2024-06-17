@@ -1,0 +1,26 @@
+name: Production
+
+on:
+  push:
+    branches: [ 'main' ]
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v3
+
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v4.0.0
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restore NuGet packages
+        run: dotnet restore ./NitroBoostConsoleService.sln
+
+      - name: Build solution
+        run: dotnet build ./NitroBoostConsoleService.sln -c Release --no-restore

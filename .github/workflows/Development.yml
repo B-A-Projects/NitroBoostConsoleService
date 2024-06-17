@@ -29,29 +29,34 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dev-build
-          path: ./NitroBoostConsoleService.Web/bin/Debug/net8.0
+          path: ./NitroBoostConsoleService.Web/bin/Debug/net7.0
+
+      - name: Upload tests as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dev-test
+          path: ./NitroBoostConsoleService.Test/bin/Debug/net7.0
 
   test:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Checkout branch
-        uses: actions/checkout@v3
-
-      - name: Create build directory
-        run: md ./NitroBoostConsoleService.Web/bin/Debug/net8.0
-
       - name: Download existing build
         uses: actions/download-artifact@v4
         with:
           name: dev-build
-          path: ./NitroBoostConsoleService.Web/bin/Debug/net8.0
+
+      - name: Download tests for existing build
+        uses: actions/download-artifact@v4
+        with:
+          name: dev-test
 
       - name: Run unit tests
-        run: dotnet test ./NitroBoostConsoleService.sln -c Release --no-build
+        run: dotnet test NitroBoostConsoleService.Test.dll
 
   sonar:
     runs-on: windows-latest
+    environment: Development
     needs: test
     steps:
       - name: Set up JDK 17
@@ -100,38 +105,37 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"B-A-Projects_NitroBoostConsoleService" /o:"b-a-projects" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"B-A-Projects_NitroBoostConsoleService" /o:"b-a-projects" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
           dotnet build ./NitroBoostConsoleService.sln -c Release
           dotnet-coverage collect 'dotnet test' -f xml  -o 'coverage.xml'
-          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
 
   docker:
     runs-on: ubuntu-latest
+    environment: Development
     needs: sonar
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+        
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      
+        
       - name: Log in to Docker Hub
-        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        uses: docker/metadata-action@v5
         with:
-          images: blurrito/nitroboostconsoleservice-dev:latest
-      
-      - name: Build and push Docker image
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
-        with:
-          context: .
-          platforms: linux/arm64,linux/amd64
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          images: ${{ secrets.DOCKER_USERNAME }}/NitroBoostConsoleService
+
+      - name: Build and push
+        run: |
+          docker buildx build -t ${{ secrets.DOCKER_USERNAME }}/nitroboostconsoleservice:amd --platform linux/amd64 --build-arg "TARGETARCH=amd64" -f Dockerfile.amd --push .
