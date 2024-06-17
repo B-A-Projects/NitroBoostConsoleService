@@ -10,8 +10,10 @@ namespace NitroBoostConsoleService.Shared.Interface.Repository
 {
     public interface IUserRepository
     {
-        UserDto?GetUser(int userId);
-        UserDto? AddUser(UserDto user);
-        IEnumerable<UserDto> FindUsers(Expression<Func<UserDto, bool>> predicate);
+        Task<UserDto?> GetUserById(long userId);
+        Task<UserDto?> GetUserByEmail(string email);
+        Task<UserDto?> AddUser(UserDto user, string email);
+        Task<UserDto?> UpdateNickname(string email, string nickname);
+        Task DeleteUser(string email);
     }
 }

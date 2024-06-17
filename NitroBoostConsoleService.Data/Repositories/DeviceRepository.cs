@@ -5,8 +5,10 @@ using NitroBoostConsoleService.Shared.Interface.Repository;
 
 namespace NitroBoostConsoleService.Data.Repositories;
 
-public class DeviceRepository(NitroboostConsoleContext context) : BaseRepository<Device>(context), IDeviceRepository
+public class DeviceRepository : BaseRepository<Device>, IDeviceRepository
 {
+    public DeviceRepository(NitroboostConsoleContext context) : base(context) {}
+    
     public async Task<DeviceDto?> GetDeviceById(long deviceId) => 
         (await Find(x => x.Id == deviceId)).FirstOrDefault()?.ToDeviceDto();
 
@@ -72,6 +74,14 @@ public class DeviceRepository(NitroboostConsoleContext context) : BaseRepository
         Device? entity = (await Find(x => x.DeviceId == deviceId)).FirstOrDefault();
         if (entity != null)
             Delete(entity!);
+    }
+
+    public async Task UnlinkDevices(long userId)
+    {
+        List<Device> devices = (await Find(x => x.UserId == userId)).ToList();
+        devices.ForEach(x => x.UserId = null);
+        UpdateMany(devices);
+        await _context.SaveChangesAsync();
     }
 
     public async Task DeleteDevices(long[] deviceIds)

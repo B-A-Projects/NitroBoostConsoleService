@@ -8,14 +8,22 @@ namespace NitroBoostConsoleService.Shared.Dto
 {
     public struct UserDto
     {
-        public int? Id { get; set; }
-        public int UserId { get; set; }
-        public long DeviceId { get; set; }
-        public string Password { get; set; }
-        public string MacAddress { get; set; }
-        public string? DeviceName { get; set; }
-        public DateTime? CreatedDate { get; set; }
+        public long? Id { get; set; }
+        public long? FavouriteGameId { get; set; }
+        public string Email { get; set; }
+        public string Nickname { get; set; }
+        public DateTime? BirthDate { get; set; }
+        public DateTime CreatedDate { get; set; }
         
         public ICollection<DeviceDto>? Devices { get; set; }
+        
+        public UserDto() {}
+
+        public UserDto(string email)
+        {
+            Email = email;
+            Nickname = "Default";
+            CreatedDate = DateTime.Now;
+        }
     }
 }

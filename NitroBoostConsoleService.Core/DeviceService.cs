@@ -1,15 +1,24 @@
+using System.Text.Json;
 using NitroBoostConsoleService.Shared.Dto;
 using NitroBoostConsoleService.Shared.Interface.Repository;
 using NitroBoostConsoleService.Shared.Interface.Service;
+using NitroBoostMessagingClient.Dtos;
+using NitroBoostMessagingClient.Enums;
+using NitroBoostMessagingClient.Interfaces;
 
 namespace NitroBoostConsoleService.Core;
 
 public class DeviceService : IDeviceService
 {
     private IDeviceRepository _repository;
+    private IBaseSender _sender;
 
-    public DeviceService(IDeviceRepository repository) => _repository = repository;
-    
+    public DeviceService(IDeviceRepository repository, IBaseSender sender)
+    {
+        _repository = repository;
+        _sender = sender;
+    }
+
     public async Task<DeviceDto?> GetDeviceById(long deviceId, long userId)
     {
         if (deviceId < 1)
@@ -26,11 +35,23 @@ public class DeviceService : IDeviceService
     public async Task<DeviceDto[]> GetUserLinkedDevices(long userId)
     {
         if (userId < 1)
-            return [];
+            return Array.Empty<DeviceDto>();
         return await _repository.GetUserLinkedDevices(userId);
     }
 
-    public async Task<DeviceDto?> AddDevice(DeviceDto device, long userId) => await _repository.AddDevice(device);
+    public async Task<DeviceDto?> AddDevice(DeviceDto device, long userId)
+    {
+        var result = await _repository.AddDevice(device);
+        if (result == null)
+            return null;
+        
+        _sender.Send("hashing", new MessageDto()
+        {
+            Action = ActionType.Add,
+            Body = result.Id.ToString()
+        });
+        return result;
+    }
 
     public async Task<DeviceDto?> UpdateDevice(DeviceDto device, long userId) => await _repository.UpdateDeviceInfo(device);
 
@@ -50,6 +71,11 @@ public class DeviceService : IDeviceService
     // {
     //     
     // }
+
+    public async Task UnlinkDevices(long userId)
+    {
+        
+    }
 
     public async Task DeleteDevice(long deviceId, long userId) => await _repository.DeleteDevice(deviceId);
 }

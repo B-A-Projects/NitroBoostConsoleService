@@ -8,5 +8,6 @@ public interface IDeviceService
     Task<DeviceDto[]> GetUserLinkedDevices(long userId);
     Task<DeviceDto?> AddDevice(DeviceDto device, long userId);
     Task<DeviceDto?> UpdateDevice(DeviceDto device, long userId);
+    Task UnlinkDevices(long userId);
     Task DeleteDevice(long deviceId, long userId);
 }

@@ -10,5 +10,6 @@ public interface IDeviceRepository
     Task<DeviceDto?> AddDevice(DeviceDto device);
     Task<DeviceDto?> UpdateLinkedUser(DeviceDto device);
     Task<DeviceDto?> UpdateDeviceInfo(DeviceDto device);
+    Task UnlinkDevices(long userId);
     Task DeleteDevice(long deviceId);
 }

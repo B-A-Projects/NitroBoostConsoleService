@@ -4,7 +4,7 @@ using NitroBoostConsoleService.Shared.Dto;
 
 namespace NitroBoostConsoleService.Data.Entities;
 
-public class Device()
+public class Device
 {
     [Key] 
     [Column("id")] 
@@ -35,7 +35,9 @@ public class Device()
 
     public ICollection<Game> Games { get; set; }
 
-    public Device(DeviceDto dto) : this()
+    public Device() {}
+    
+    public Device(DeviceDto dto)
     {
         Id = dto.Id ?? 0;
         UserId = dto.UserId;

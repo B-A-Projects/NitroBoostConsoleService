@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <OutputType>Exe</OutputType>
         <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
@@ -9,14 +10,23 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.18" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.18">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
       <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.18">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
+      <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="7.6.0" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.18" />
+      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.6.0" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\NitroBoostAuthenticationService\NitroBoostMessagingClient\NitroBoostMessagingClient.csproj" />
+      <ProjectReference Include="..\NitroBoostConsoleService.Core\NitroBoostConsoleService.Core.csproj" />
+      <ProjectReference Include="..\NitroBoostConsoleService.Data\NitroBoostConsoleService.Data.csproj" />
       <ProjectReference Include="..\NitroBoostConsoleService.Shared\NitroBoostConsoleService.Shared.csproj" />
     </ItemGroup>
 

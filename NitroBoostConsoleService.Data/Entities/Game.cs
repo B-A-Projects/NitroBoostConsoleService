@@ -4,7 +4,7 @@ using NitroBoostConsoleService.Shared.Dto;
 
 namespace NitroBoostConsoleService.Data.Entities;
 
-public class Game()
+public class Game
 {
     [Key]
     [Column("id")]
@@ -72,7 +72,9 @@ public class Game()
     
     public ICollection<Friend> Friends { get; set; }
 
-    public Game(GameDto dto) : this()
+    public Game() {}
+    
+    public Game(GameDto dto)
     {
         
     }

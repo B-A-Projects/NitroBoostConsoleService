@@ -9,7 +9,10 @@ namespace NitroBoostConsoleService.Shared.Interface.Service
 {
     public interface IUserService
     {
-        UserDto? GetUser(int userId);
-        UserDto? AddUser(UserDto user);
+        Task<UserDto?> GetUserById(long userId);
+        Task<UserDto?> GetUserByEmail(string email);
+        Task<UserDto?> AddUser(string email);
+        Task<UserDto?> UpdateNickname(string email, string nickname);
+        Task DeleteUser(string email);
     }
 }

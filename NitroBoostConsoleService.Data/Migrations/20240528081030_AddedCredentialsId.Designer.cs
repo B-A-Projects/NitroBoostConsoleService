@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NitroBoostConsoleService.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,13 +12,15 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace NitroBoostConsoleService.Data.Migrations
 {
     [DbContext(typeof(NitroboostConsoleContext))]
-    partial class NitroboostConsoleContextModelSnapshot : ModelSnapshot
+    [Migration("20240528081030_AddedCredentialsId")]
+    partial class AddedCredentialsId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.18")
+                .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -199,14 +202,9 @@ namespace NitroBoostConsoleService.Data.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("birth_date");
 
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_date");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("email");
+                    b.Property<long>("CredentialsId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("credentials_id");
 
                     b.Property<long?>("FavouriteGameId")
                         .HasColumnType("bigint")
@@ -220,6 +218,10 @@ namespace NitroBoostConsoleService.Data.Migrations
                     b.Property<bool>("ShowBirthdate")
                         .HasColumnType("boolean")
                         .HasColumnName("show_birth_date");
+
+                    b.Property<bool>("Validated")
+                        .HasColumnType("boolean")
+                        .HasColumnName("validated");
 
                     b.HasKey("Id");
 

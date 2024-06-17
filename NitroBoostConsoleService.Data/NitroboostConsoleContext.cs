@@ -18,4 +18,10 @@ public class NitroboostConsoleContext : DbContext
         : base(options)
     {
     }
+    
+    // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    // {
+    //     optionsBuilder.UseNpgsql("Host=localhost;Database=nitroboost-console;Username=blurrito;Password=YCR-200400;");
+    //     //optionsBuilder.UseNpgsql("Host=35.234.101.141;Port=5432;Database=console-database;Username=postgres;Password=YCR-200400;");
+    // }
 }

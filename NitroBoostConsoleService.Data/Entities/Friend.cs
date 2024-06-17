@@ -4,7 +4,7 @@ using NitroBoostConsoleService.Shared.Dto;
 
 namespace NitroBoostConsoleService.Data.Entities;
 
-public class Friend()
+public class Friend
 {
     [Key] 
     [Column("id")] 
@@ -29,7 +29,9 @@ public class Friend()
     [Column("created_date")] 
     public DateTime CreatedDate { get; set; } = DateTime.Now;
 
-    public Friend(FriendDto dto) : this()
+    public Friend() {}
+    
+    public Friend(FriendDto dto)
     {
         
     }

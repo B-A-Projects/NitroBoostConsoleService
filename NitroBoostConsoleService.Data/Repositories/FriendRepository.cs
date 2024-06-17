@@ -3,8 +3,10 @@ using NitroBoostConsoleService.Shared.Dto;
 
 namespace NitroBoostConsoleService.Data.Repositories;
 
-public class FriendRepository(NitroboostConsoleContext context) : BaseRepository<Friend>(context)
+public class FriendRepository : BaseRepository<Friend>
 {
+    public FriendRepository(NitroboostConsoleContext context) : base(context) {}
+    
     public async Task<IEnumerable<FriendDto>> GetFriends(long senderId)
     {
         List<FriendDto> dto = new List<FriendDto>();
