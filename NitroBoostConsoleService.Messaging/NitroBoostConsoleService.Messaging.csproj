@@ -24,10 +24,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\NitroBoostAuthenticationService\NitroBoostMessagingClient\NitroBoostMessagingClient.csproj" />
       <ProjectReference Include="..\NitroBoostConsoleService.Core\NitroBoostConsoleService.Core.csproj" />
       <ProjectReference Include="..\NitroBoostConsoleService.Data\NitroBoostConsoleService.Data.csproj" />
       <ProjectReference Include="..\NitroBoostConsoleService.Shared\NitroBoostConsoleService.Shared.csproj" />
+      <ProjectReference Include="..\NitroBoostMessagingClient\NitroBoostMessagingClient.csproj" />
     </ItemGroup>
 
 </Project>

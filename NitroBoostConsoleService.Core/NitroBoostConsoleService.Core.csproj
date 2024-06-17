@@ -8,8 +8,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\NitroBoostAuthenticationService\NitroBoostMessagingClient\NitroBoostMessagingClient.csproj" />
       <ProjectReference Include="..\NitroBoostConsoleService.Shared\NitroBoostConsoleService.Shared.csproj" />
+      <ProjectReference Include="..\NitroBoostMessagingClient\NitroBoostMessagingClient.csproj" />
     </ItemGroup>
 
 </Project>
