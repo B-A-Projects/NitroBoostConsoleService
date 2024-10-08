@@ -1,22 +1,42 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: Production
+  name: console-deployment
   labels:
-    app: Production
-  namespace: nitroboost
+    app: nitroboost-console
 spec:
-  replicas: 1
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 50%
   selector:
     matchLabels:
-      app: Production
+      app: console-pod
   template:
     metadata:
       labels:
-        app: Production
+        app: console-pod
     spec:
       containers:
-        - name: Production
-          image: nitroboostregistry.azurecr.io/nitroboost-container:latest
+        - name: console-pod
+          image: blurrito/nitroboostconsoleservice:latest
           ports:
-            - containerPort: 8080
+            - name: http
+              containerPort: 5000
+          env:
+            - name: CONNECTION_STRING
+              valueFrom:
+                secretKeyRef:
+                  name: database-secret
+                  key: console
+          args:
+            - "$(CONNECTION_STRING)"
+          resources:
+            requests:
+              cpu: "125m"
+              memory: "64Mi"
+            limits:
+              cpu: "250m"
+              memory: "128Mi"
+      terminationGracePeriodSeconds: 1

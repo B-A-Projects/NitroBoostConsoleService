@@ -27,7 +27,7 @@ public class MessageProcessor : IMessageProcessor
         _helper = helper;
     }
 
-public async Task ProcessMessage(MessageDto message)
+    public async Task ProcessMessage(MessageDto message)
     {
         try
         {
@@ -92,7 +92,7 @@ public async Task ProcessMessage(MessageDto message)
             case ActionType.Delete:
                 await GetProfileService().DeleteUserInformation(message.Body);
                 break;
-                default:
+            default:
                 throw new NotImplementedException();
         }
     }

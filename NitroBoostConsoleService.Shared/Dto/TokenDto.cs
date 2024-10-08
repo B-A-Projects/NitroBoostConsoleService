@@ -13,15 +13,16 @@ public static class TokenDto
 
     private static string _tokenString;
     private static string _tokenStringCopy;
-    private static string _tokenType = "Bearer";
+    private static string _tokenType;
+    private static int _expiresIn;
     
     private static DateTime _createdDateTime;
-    private static DateTime _expiredDateTime => _createdDateTime.AddMinutes(55);
+    private static DateTime _expiredDateTime => _createdDateTime.AddSeconds(_expiresIn);
     private static bool _IsUpdating = false;
 
     public static string GetToken()
     {
-        if (_expiredDateTime >= DateTime.Now && !_IsUpdating)
+        if (_expiredDateTime < DateTime.Now.AddMinutes(-5) && !_IsUpdating)
             UpdateToken();
         else if (_IsUpdating)
             return $"{_tokenType} {_tokenStringCopy}";
@@ -35,16 +36,16 @@ public static class TokenDto
             _IsUpdating = true;
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Post, RefreshUrl);
-            request.Headers.Add("content-type", "application/json");
             request.Content = JsonContent.Create(Configuration, typeof(AuthenticationConfiguration),
                 MediaTypeHeaderValue.Parse("application/json"));
 
             var response = client.Send(request);
             if (response.IsSuccessStatusCode)
             {
-                var body = JsonSerializer.Deserialize<TokenResponse>(response.Content.ToString());
+                var body = JsonSerializer.Deserialize<TokenResponse>(response.Content.ReadAsStringAsync().GetAwaiter().GetResult());
                 _tokenString = body.AccessToken;
                 _tokenType = body.TokenType;
+                _expiresIn = body.ExpiresIn;
             }
             _createdDateTime = DateTime.Now;
         }
@@ -63,4 +64,10 @@ internal class TokenResponse
     
     [JsonPropertyName("token_type")]
     public string TokenType { get; set; }
+    
+    [JsonPropertyName("expires_in")]
+    public int ExpiresIn { get; set; }
+    
+    [JsonPropertyName("scope")]
+    public string Scope { get; set; }
 }

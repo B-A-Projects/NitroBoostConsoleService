@@ -1,13 +1,21 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: Production
-  namespace: nitroboost
+  name: console-service
+  labels:
+    app: nitroboost-console
+  annotations:
+    cloud.google.com/neg: '{"ingress": true}'
+    cloud.google.com/backend-config: '{"default": "console-backendconfig"}'
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
-    app: Production
+    app: console-pod
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
   ports:
-    - protocol: TCP
+    - name: http
+      protocol: TCP
       port: 8080
-      targetPort: 8080
+      targetPort: 5000
+      nodePort: 31000

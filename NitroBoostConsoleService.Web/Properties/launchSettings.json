@@ -11,6 +11,7 @@
   "profiles": {
     "http": {
       "commandName": "Project",
+      "commandLineArgs": "Host=localhost;Database=nitroboost-console;Username=blurrito;Password=YCR-200400; https://blurrito.eu.auth0.com/ DMP0s6in0NbcYlMwQkKXgcVvTU7ozkvF localhost",
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",

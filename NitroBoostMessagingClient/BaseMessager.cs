@@ -20,7 +20,7 @@ public abstract class BaseMessager : IDisposable
         if ((RabbitmqConnection?.IsOpen).GetValueOrDefault())
             return true;
         
-        int attemptCounter = 0;
+        var attemptCounter = 0;
         do
         {
             RabbitmqConnection = RabbitmqConnectionFactory.CreateConnection();
